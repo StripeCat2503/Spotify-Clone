@@ -35,6 +35,16 @@ class $AssetsIconsPngGen {
 class $AssetsIconsSvgGen {
   const $AssetsIconsSvgGen();
 
+  /// File path: assets/icons/svg/apple.svg
+  SvgGenImage get apple => const SvgGenImage('assets/icons/svg/apple.svg');
+
+  /// File path: assets/icons/svg/facebook.svg
+  SvgGenImage get facebook =>
+      const SvgGenImage('assets/icons/svg/facebook.svg');
+
+  /// File path: assets/icons/svg/google.svg
+  SvgGenImage get google => const SvgGenImage('assets/icons/svg/google.svg');
+
   /// File path: assets/icons/svg/logo.svg
   SvgGenImage get logo => const SvgGenImage('assets/icons/svg/logo.svg');
 }
