@@ -30,13 +30,43 @@ class $AssetsIconsPngGen {
   /// File path: assets/icons/png/launcher_icon.png
   AssetGenImage get launcherIcon =>
       const AssetGenImage('assets/icons/png/launcher_icon.png');
+
+  /// File path: assets/icons/png/splash_icon.png
+  AssetGenImage get splashIcon =>
+      const AssetGenImage('assets/icons/png/splash_icon.png');
 }
 
 class $AssetsIconsSvgGen {
   const $AssetsIconsSvgGen();
 
+  /// File path: assets/icons/svg/apple.svg
+  SvgGenImage get apple => const SvgGenImage('assets/icons/svg/apple.svg');
+
+  /// File path: assets/icons/svg/check.svg
+  SvgGenImage get check => const SvgGenImage('assets/icons/svg/check.svg');
+
+  /// File path: assets/icons/svg/chervon_left_circle.svg
+  SvgGenImage get chervonLeftCircle =>
+      const SvgGenImage('assets/icons/svg/chervon_left_circle.svg');
+
+  /// File path: assets/icons/svg/facebook.svg
+  SvgGenImage get facebook =>
+      const SvgGenImage('assets/icons/svg/facebook.svg');
+
+  /// File path: assets/icons/svg/google.svg
+  SvgGenImage get google => const SvgGenImage('assets/icons/svg/google.svg');
+
+  /// File path: assets/icons/svg/home.svg
+  SvgGenImage get home => const SvgGenImage('assets/icons/svg/home.svg');
+
+  /// File path: assets/icons/svg/library.svg
+  SvgGenImage get library => const SvgGenImage('assets/icons/svg/library.svg');
+
   /// File path: assets/icons/svg/logo.svg
   SvgGenImage get logo => const SvgGenImage('assets/icons/svg/logo.svg');
+
+  /// File path: assets/icons/svg/search.svg
+  SvgGenImage get search => const SvgGenImage('assets/icons/svg/search.svg');
 }
 
 class $AssetsImagesPngGen {

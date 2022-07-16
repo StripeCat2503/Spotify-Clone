@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify_clone/src/app.dart';
 
-void main() {
-  runApp(const SpotifyApp());
+Future<void> main() async {
+  await ScreenUtil.ensureScreenSize();
+
+  runApp(const ProviderScope(child: SpotifyApp()));
 }
