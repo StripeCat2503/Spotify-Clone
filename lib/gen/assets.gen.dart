@@ -45,6 +45,10 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/check.svg
   SvgGenImage get check => const SvgGenImage('assets/icons/svg/check.svg');
 
+  /// File path: assets/icons/svg/chervon_down.svg
+  SvgGenImage get chervonDown =>
+      const SvgGenImage('assets/icons/svg/chervon_down.svg');
+
   /// File path: assets/icons/svg/chervon_left_circle.svg
   SvgGenImage get chervonLeftCircle =>
       const SvgGenImage('assets/icons/svg/chervon_left_circle.svg');
@@ -56,6 +60,9 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/google.svg
   SvgGenImage get google => const SvgGenImage('assets/icons/svg/google.svg');
 
+  /// File path: assets/icons/svg/heart.svg
+  SvgGenImage get heart => const SvgGenImage('assets/icons/svg/heart.svg');
+
   /// File path: assets/icons/svg/home.svg
   SvgGenImage get home => const SvgGenImage('assets/icons/svg/home.svg');
 
@@ -65,8 +72,27 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/logo.svg
   SvgGenImage get logo => const SvgGenImage('assets/icons/svg/logo.svg');
 
+  /// File path: assets/icons/svg/more.svg
+  SvgGenImage get more => const SvgGenImage('assets/icons/svg/more.svg');
+
+  /// File path: assets/icons/svg/pause.svg
+  SvgGenImage get pause => const SvgGenImage('assets/icons/svg/pause.svg');
+
+  /// File path: assets/icons/svg/play.svg
+  SvgGenImage get play => const SvgGenImage('assets/icons/svg/play.svg');
+
+  /// File path: assets/icons/svg/play_next.svg
+  SvgGenImage get playNext =>
+      const SvgGenImage('assets/icons/svg/play_next.svg');
+
+  /// File path: assets/icons/svg/replay.svg
+  SvgGenImage get replay => const SvgGenImage('assets/icons/svg/replay.svg');
+
   /// File path: assets/icons/svg/search.svg
   SvgGenImage get search => const SvgGenImage('assets/icons/svg/search.svg');
+
+  /// File path: assets/icons/svg/suffle.svg
+  SvgGenImage get suffle => const SvgGenImage('assets/icons/svg/suffle.svg');
 }
 
 class $AssetsImagesPngGen {

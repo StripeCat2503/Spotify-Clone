@@ -7,6 +7,9 @@ import 'package:spotify_clone/gen/colors.gen.dart';
 import 'package:spotify_clone/src/core/containers/scroll_view_container.dart';
 import 'package:spotify_clone/src/core/providers/main_screen_provider.dart';
 import 'package:spotify_clone/src/core/screens/base_screen.dart';
+import 'package:spotify_clone/src/modules/home/screens/home_screen.dart';
+import 'package:spotify_clone/src/modules/search/screens/search_screen.dart';
+import 'package:spotify_clone/src/modules/your_library/screens/your_library_screen.dart';
 
 class MainScreen extends HookConsumerWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -18,9 +21,7 @@ class MainScreen extends HookConsumerWidget {
     return BaseScreen(
       child: Scaffold(
         appBar: AppBar(),
-        body: const ScrollViewContainer(
-          children: [],
-        ),
+        body: provider.tab.asPage,
         bottomNavigationBar: _buildBottomNavBar(provider),
       ),
     );
@@ -63,6 +64,17 @@ enum MainScreenTab {
 }
 
 extension _MainScreenTabX on MainScreenTab {
+  Widget get asPage {
+    switch (this) {
+      case MainScreenTab.home:
+        return const HomeScreen();
+      case MainScreenTab.search:
+        return const SearchScreen();
+      case MainScreenTab.library:
+        return const YourLibraryScreen();
+    }
+  }
+
   Widget bottomIcon({bool isActive = false}) {
     String path;
     switch (this) {
