@@ -6,7 +6,12 @@ import 'package:spotify_clone/gen/assets.gen.dart';
 import 'package:spotify_clone/gen/colors.gen.dart';
 
 class SignUpAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const SignUpAppBar({Key? key}) : super(key: key);
+  const SignUpAppBar({
+    Key? key,
+    this.onBack,
+  }) : super(key: key);
+
+  final VoidCallback? onBack;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +34,7 @@ class SignUpAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   Widget _leading(BuildContext context) {
     return InkWell(
-      onTap: () => _onBack(context),
+      onTap: onBack,
       child: SvgPicture.asset(
         Assets.icons.svg.chervonLeftCircle.path,
         fit: BoxFit.scaleDown,
@@ -39,8 +44,4 @@ class SignUpAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => Size.fromHeight(56.h);
-
-  void _onBack(BuildContext context) {
-    context.pop();
-  }
 }
