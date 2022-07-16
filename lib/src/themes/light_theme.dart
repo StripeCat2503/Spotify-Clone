@@ -9,7 +9,6 @@ ThemeData lightTheme() {
     scaffoldBackgroundColor: ColorName.black1,
     appBarTheme: _appbarTheme,
     textSelectionTheme: _textSelectionTheme,
-    // pageTransitionsTheme: _pageTransitionsTheme,
   );
 }
 
@@ -21,10 +20,6 @@ const _appbarTheme = AppBarTheme(
 
 const _textSelectionTheme = TextSelectionThemeData(
   cursorColor: ColorName.primary,
+  selectionColor: ColorName.primary,
+  selectionHandleColor: ColorName.primary,
 );
-
-// const _pageTransitionsTheme = PageTransitionsTheme(
-//   builders: {
-//     TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-//   },
-// );

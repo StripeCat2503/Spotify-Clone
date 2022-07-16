@@ -1,11 +1,14 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify_clone/src/core/view_models/base_viewmodel.dart';
+import 'package:spotify_clone/src/core/providers/base_provider.dart';
+import 'package:spotify_clone/src/core/utils/validation.dart';
 import 'package:spotify_clone/src/modules/authentication/sign_up/models/sign_up_model.dart';
 import 'package:spotify_clone/src/modules/authentication/sign_up/values/sign_up_step.dart';
 
-class SignUpViewModel extends BaseViewModel {
+class SignUpProvider extends BaseProvider {
   SignUpStep step = SignUpStep.email;
   bool loading = false;
+  bool privacySendNewsChecked = false;
+  bool privacyShareDataChecked = false;
 
   SignUpModel model = SignUpModel('', '', '', '');
 
@@ -13,39 +16,56 @@ class SignUpViewModel extends BaseViewModel {
 
   int get stepIndex => SignUpStep.values.indexOf(step);
 
+  bool get isLastStep => stepIndex == SignUpStep.values.length - 1;
+
   void changeStep(SignUpStep step) {
     this.step = step;
     notifyListeners();
   }
 
-  bool nextStep() {
+  SignUpStep? nextStep() {
     final currentStepIndex = SignUpStep.values.indexOf(step);
     if (currentStepIndex < _totalStep - 1) {
       step = SignUpStep.values[currentStepIndex + 1];
       notifyListeners();
 
-      return true;
+      return step;
     }
 
-    return false;
+    return null;
   }
 
-  bool prevStep() {
+  SignUpStep? prevStep() {
     final currentStepIndex = SignUpStep.values.indexOf(step);
     if (currentStepIndex > 0) {
       step = SignUpStep.values[currentStepIndex - 1];
+      switch (step) {
+        case SignUpStep.gender:
+          model.name = '';
+          privacySendNewsChecked = false;
+          privacyShareDataChecked = false;
+          break;
+        case SignUpStep.password:
+          model.gender = '';
+          break;
+        case SignUpStep.email:
+          model.password = '';
+          break;
+        default:
+      }
+
       notifyListeners();
 
-      return true;
+      return step;
     }
 
-    return false;
+    return null;
   }
 
   bool canNextStep(SignUpStep step) {
     switch (step) {
       case SignUpStep.email:
-        return model.email.isNotEmpty;
+        return isEmail(model.email);
       case SignUpStep.password:
         return model.password.isNotEmpty;
       case SignUpStep.gender:
@@ -75,12 +95,26 @@ class SignUpViewModel extends BaseViewModel {
     notifyListeners();
   }
 
+  void onCheckPrivacySendNews() {
+    privacySendNewsChecked = !privacySendNewsChecked;
+    notifyListeners();
+  }
+
+  void onCheckPrivacyShareData() {
+    privacyShareDataChecked = !privacyShareDataChecked;
+    notifyListeners();
+  }
+
   @override
   void refresh() {
     step = SignUpStep.email;
+    loading = false;
+    model = SignUpModel('', '', '', '');
+    privacySendNewsChecked = false;
+    privacyShareDataChecked = false;
   }
 }
 
-final signUpProvider = ChangeNotifierProvider<SignUpViewModel>((ref) {
-  return SignUpViewModel();
+final signUpProvider = ChangeNotifierProvider<SignUpProvider>((ref) {
+  return SignUpProvider();
 });

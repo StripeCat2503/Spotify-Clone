@@ -12,6 +12,12 @@ class SpotifyTextField extends StatelessWidget {
     this.helperText,
     this.helperTextStyle,
     this.onChanged,
+    this.onFieldSubmitted,
+    this.keyboardType,
+    this.autoFocus = false,
+    this.focusNode,
+    this.suffixIcon,
+    this.controller,
   }) : super(key: key);
 
   final Color backgroundColor;
@@ -21,6 +27,12 @@ class SpotifyTextField extends StatelessWidget {
   final String? hintText;
   final String? helperText;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onFieldSubmitted;
+  final TextInputType? keyboardType;
+  final bool autoFocus;
+  final FocusNode? focusNode;
+  final Widget? suffixIcon;
+  final TextEditingController? controller;
 
   TextStyle get _textStyle => TextStyle(
         color: ColorName.white,
@@ -39,6 +51,11 @@ class SpotifyTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextFormField(
+          controller: controller,
+          focusNode: focusNode,
+          autofocus: autoFocus,
+          onFieldSubmitted: onFieldSubmitted,
+          keyboardType: keyboardType,
           onChanged: onChanged,
           style: _textStyle.merge(textStyle),
           enableSuggestions: false,
@@ -60,6 +77,7 @@ class SpotifyTextField extends StatelessWidget {
             ),
             hintText: hintText,
             hintStyle: hintTextStyle,
+            suffixIcon: suffixIcon,
           ),
         ),
         if (helperText != null)

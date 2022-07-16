@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/src/size_extension.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:spotify_clone/gen/colors.gen.dart';
 
 enum SpotifyButtonVariant {
@@ -15,6 +15,7 @@ class SpotifyButton extends StatelessWidget {
     this.variant = SpotifyButtonVariant.solid,
     this.color = ColorName.primary,
     this.disabledColor,
+    this.splashColor,
     this.prefixIcon,
     this.onTap,
     this.titleStyle,
@@ -30,6 +31,7 @@ class SpotifyButton extends StatelessWidget {
   final SpotifyButtonVariant variant;
   final Color color;
   final Color? disabledColor;
+  final Color? splashColor;
   final VoidCallback? onTap;
   final Widget? prefixIcon;
   final TextStyle? titleStyle;
@@ -73,6 +75,7 @@ class SpotifyButton extends StatelessWidget {
               onPressed: (!loading && enabled) ? onTap : null,
               style: ButtonStyle(
                 backgroundColor: _backgroundColor,
+                overlayColor: MaterialStateProperty.all<Color?>(splashColor),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: borderRadius ?? BorderRadius.circular(45.r),
