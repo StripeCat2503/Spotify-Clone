@@ -30,6 +30,10 @@ class $AssetsIconsPngGen {
   /// File path: assets/icons/png/launcher_icon.png
   AssetGenImage get launcherIcon =>
       const AssetGenImage('assets/icons/png/launcher_icon.png');
+
+  /// File path: assets/icons/png/splash_icon.png
+  AssetGenImage get splashIcon =>
+      const AssetGenImage('assets/icons/png/splash_icon.png');
 }
 
 class $AssetsIconsSvgGen {
@@ -37,6 +41,10 @@ class $AssetsIconsSvgGen {
 
   /// File path: assets/icons/svg/apple.svg
   SvgGenImage get apple => const SvgGenImage('assets/icons/svg/apple.svg');
+
+  /// File path: assets/icons/svg/chervon_left_circle.svg
+  SvgGenImage get chervonLeftCircle =>
+      const SvgGenImage('assets/icons/svg/chervon_left_circle.svg');
 
   /// File path: assets/icons/svg/facebook.svg
   SvgGenImage get facebook =>

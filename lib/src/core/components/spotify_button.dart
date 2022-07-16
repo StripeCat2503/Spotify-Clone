@@ -66,7 +66,8 @@ class SpotifyButton extends StatelessWidget {
               ),
               side: MaterialStateProperty.all<BorderSide>(
                 BorderSide(
-                  color: variant == SpotifyButtonVariant.solid
+                  color: (variant == SpotifyButtonVariant.solid ||
+                          variant == SpotifyButtonVariant.text)
                       ? Colors.transparent
                       : color,
                 ),

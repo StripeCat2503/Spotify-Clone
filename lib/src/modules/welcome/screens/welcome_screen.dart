@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotify_clone/gen/assets.gen.dart';
 import 'package:spotify_clone/gen/colors.gen.dart';
 import 'package:spotify_clone/src/core/components/spotify_button.dart';
+import 'package:spotify_clone/src/core/routers/sign_up_routes.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -16,10 +17,10 @@ class WelcomeScreen extends StatelessWidget {
         children: [
           _buildBackground(),
           Positioned(
-            top: 0.5.sh,
+            bottom: 54.h,
             left: 0,
             right: 0,
-            child: _buildContent(),
+            child: _buildContent(context),
           ),
         ],
       ),
@@ -42,7 +43,7 @@ class WelcomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 45.w),
       child: Column(
@@ -64,7 +65,7 @@ class WelcomeScreen extends StatelessWidget {
             height: 22.h,
           ),
           SpotifyButton(
-            onTap: () {},
+            onTap: () => navigateSignUp(context, push: true),
             title: 'Sign up free',
           ),
           SizedBox(
@@ -96,6 +97,15 @@ class WelcomeScreen extends StatelessWidget {
             variant: SpotifyButtonVariant.outlined,
             color: ColorName.white,
             prefixIcon: _prefixIcon(Assets.icons.svg.apple.path),
+          ),
+          SizedBox(
+            height: 12.h,
+          ),
+          SpotifyButton(
+            onTap: () {},
+            title: 'Log in',
+            variant: SpotifyButtonVariant.text,
+            color: ColorName.white,
           ),
         ],
       ),

@@ -25,6 +25,9 @@ class ColorName {
   /// Color: #777777
   static const Color greyLight = Color(0xFF777777);
 
+  /// Color: #FFFFFF
+  static const Color originalWhite = Color(0xFFFFFFFF);
+
   /// Color: #1ED760
   static const Color primary = Color(0xFF1ED760);
 

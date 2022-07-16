@@ -1,11 +1,20 @@
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:spotify_clone/src/modules/welcome/screens/welcome_screen.dart';
+import 'package:spotify_clone/src/core/routers/routes.dart';
 
-const _welcome = '/welcome';
+String get initialRoute => welcome;
 
 final router = GoRouter(
-  initialLocation: _welcome,
-  routes: [
-    GoRoute(path: _welcome, builder: (_, __) => const WelcomeScreen()),
-  ],
+  initialLocation: initialRoute,
+  routes: rootRoutes,
 );
+
+const navigate = SpotifyNavigation();
+
+class SpotifyNavigation {
+  const SpotifyNavigation();
+
+  void call(BuildContext context, String path, {bool push = false}) {
+    (push ? context.push : context.go).call(path);
+  }
+}
