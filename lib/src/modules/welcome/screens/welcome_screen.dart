@@ -74,7 +74,7 @@ class WelcomeScreen extends StatelessWidget {
             height: 12.h,
           ),
           SpotifyButton(
-            onTap: () => navigateSongPlaying(context),
+            onTap: () => navigateMusicPlayer(context),
             title: 'Continue with Google',
             variant: SpotifyButtonVariant.outlined,
             color: ColorName.white,

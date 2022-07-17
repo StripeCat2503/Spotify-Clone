@@ -11,6 +11,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
 
+class $AssetsAudiosGen {
+  const $AssetsAudiosGen();
+
+  /// File path: assets/audios/dong_kiem_em.mp3
+  String get dongKiemEm => 'assets/audios/dong_kiem_em.mp3';
+}
+
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
@@ -49,9 +56,24 @@ class $AssetsIconsSvgGen {
   SvgGenImage get chervonDown =>
       const SvgGenImage('assets/icons/svg/chervon_down.svg');
 
+  /// File path: assets/icons/svg/chervon_left.svg
+  SvgGenImage get chervonLeft =>
+      const SvgGenImage('assets/icons/svg/chervon_left.svg');
+
   /// File path: assets/icons/svg/chervon_left_circle.svg
   SvgGenImage get chervonLeftCircle =>
       const SvgGenImage('assets/icons/svg/chervon_left_circle.svg');
+
+  /// File path: assets/icons/svg/chervon_right.svg
+  SvgGenImage get chervonRight =>
+      const SvgGenImage('assets/icons/svg/chervon_right.svg');
+
+  /// File path: assets/icons/svg/chervon_up.svg
+  SvgGenImage get chervonUp =>
+      const SvgGenImage('assets/icons/svg/chervon_up.svg');
+
+  /// File path: assets/icons/svg/devices.svg
+  SvgGenImage get devices => const SvgGenImage('assets/icons/svg/devices.svg');
 
   /// File path: assets/icons/svg/facebook.svg
   SvgGenImage get facebook =>
@@ -85,14 +107,33 @@ class $AssetsIconsSvgGen {
   SvgGenImage get playNext =>
       const SvgGenImage('assets/icons/svg/play_next.svg');
 
+  /// File path: assets/icons/svg/play_prev.svg
+  SvgGenImage get playPrev =>
+      const SvgGenImage('assets/icons/svg/play_prev.svg');
+
+  /// File path: assets/icons/svg/playlist.svg
+  SvgGenImage get playlist =>
+      const SvgGenImage('assets/icons/svg/playlist.svg');
+
   /// File path: assets/icons/svg/replay.svg
   SvgGenImage get replay => const SvgGenImage('assets/icons/svg/replay.svg');
+
+  /// File path: assets/icons/svg/replay_active.svg
+  SvgGenImage get replayActive =>
+      const SvgGenImage('assets/icons/svg/replay_active.svg');
 
   /// File path: assets/icons/svg/search.svg
   SvgGenImage get search => const SvgGenImage('assets/icons/svg/search.svg');
 
+  /// File path: assets/icons/svg/share.svg
+  SvgGenImage get share => const SvgGenImage('assets/icons/svg/share.svg');
+
   /// File path: assets/icons/svg/suffle.svg
   SvgGenImage get suffle => const SvgGenImage('assets/icons/svg/suffle.svg');
+
+  /// File path: assets/icons/svg/suffle_active.svg
+  SvgGenImage get suffleActive =>
+      const SvgGenImage('assets/icons/svg/suffle_active.svg');
 }
 
 class $AssetsImagesPngGen {
@@ -106,6 +147,7 @@ class $AssetsImagesPngGen {
 class Assets {
   Assets._();
 
+  static const $AssetsAudiosGen audios = $AssetsAudiosGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
 }

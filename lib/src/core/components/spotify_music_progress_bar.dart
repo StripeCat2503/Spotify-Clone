@@ -3,24 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:spotify_clone/gen/colors.gen.dart';
+import 'package:spotify_clone/src/core/extensions/duration.dart';
 
 class SpotifyMusicProgressBar extends StatelessWidget {
   final Color barColor;
   final Color thumbColor;
   final double thumbSize;
   final double height;
-  final double value;
+  final Duration duration;
+  final Duration totalDuration;
   final TextStyle? textStyle;
 
-  const SpotifyMusicProgressBar({
+  SpotifyMusicProgressBar({
     Key? key,
     required this.barColor,
     required this.thumbColor,
     required this.thumbSize,
     required this.height,
-    required this.value,
+    required this.duration,
+    required this.totalDuration,
     this.textStyle,
-  })  : assert(value >= 0.0 && value <= 1.0),
+  })  : assert(duration.inMilliseconds <= totalDuration.inMilliseconds),
         super(key: key);
 
   TextStyle get _textStyle => TextStyle(
@@ -31,6 +34,11 @@ class SpotifyMusicProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double value = duration.inMilliseconds / totalDuration.inMilliseconds;
+    if (duration.inMilliseconds == totalDuration.inMilliseconds) {
+      value = 0.0;
+    }
+
     return Column(
       children: [
         _SpotifyProgressBar(
@@ -46,12 +54,12 @@ class SpotifyMusicProgressBar extends StatelessWidget {
         Row(
           children: [
             Text(
-              '00:00',
+              duration.asMinutesSeconds,
               style: _textStyle.merge(textStyle),
             ),
             const Spacer(),
             Text(
-              '03:12',
+              totalDuration.asMinutesSeconds,
               style: _textStyle.merge(textStyle),
             ),
           ],

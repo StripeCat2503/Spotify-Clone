@@ -22,6 +22,7 @@ dependencies:
   roundcheckbox: ^2.0.4+1
   freezed_annotation: ^2.1.0
   json_annotation: ^4.6.0
+  audioplayers: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -56,6 +57,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/audios/
     - assets/images/png/
     - assets/images/svg/
     - assets/icons/png/

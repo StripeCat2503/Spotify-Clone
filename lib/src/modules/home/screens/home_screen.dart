@@ -12,7 +12,7 @@ class HomeScreen extends StatelessWidget {
       child: SpotifyButton(
         width: 0.5.sw,
         title: 'Play song',
-        onTap: () => navigateSongPlaying(context),
+        onTap: () => navigateMusicPlayer(context),
       ),
     );
   }

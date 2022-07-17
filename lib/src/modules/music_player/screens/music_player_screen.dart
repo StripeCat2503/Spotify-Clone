@@ -1,29 +1,47 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify_clone/gen/assets.gen.dart';
 import 'package:spotify_clone/gen/colors.gen.dart';
-import 'package:spotify_clone/src/core/components/spotify_progress_bar.dart';
+import 'package:spotify_clone/src/modules/music_player/providers/music_player_provider.dart';
+import 'package:spotify_clone/src/modules/music_player/widgets/music_player_app_bar.dart';
+import 'package:spotify_clone/src/modules/music_player/widgets/music_player_art_image.dart';
+import 'package:spotify_clone/src/modules/music_player/widgets/music_player_bottom_actions.dart';
+import 'package:spotify_clone/src/modules/music_player/widgets/spotify_music_player.dart';
 
-import 'package:spotify_clone/src/modules/song/widgets/song_playing_app_bar.dart';
+class MusicPlayerScreen extends HookConsumerWidget {
+  const MusicPlayerScreen({Key? key}) : super(key: key);
 
-class SongPlayingScreen extends StatelessWidget {
-  const SongPlayingScreen({Key? key}) : super(key: key);
+  String get path => 'audios/dong_kiem_em.mp3';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final provider = ref.watch(musicPlayerProvider.notifier);
+    final state = ref.watch(musicPlayerProvider);
+
+    useEffect(
+      () {
+        provider.init();
+        return () => {};
+      },
+      [],
+    );
+
     return Scaffold(
       body: Stack(
         children: [
           _buildBackground(),
           CustomScrollView(
             slivers: [
-              SongPlayingAppBar(),
+              MusicPlayerAppBar(),
               SliverPadding(
                 padding: EdgeInsets.symmetric(horizontal: 25.w),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate(
-                    _buildBodyContentList(),
+                    _buildBodyContentList(provider, state),
                   ),
                 ),
               ),
@@ -35,13 +53,12 @@ class SongPlayingScreen extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildBodyContentList() {
+  List<Widget> _buildBodyContentList(
+    MusicPlayerProvider provider,
+    MusicPlayerState state,
+  ) {
     return [
-      Image.network(
-        'https://images.theconversation.com/files/457052/original/file-20220408-15-pl446k.jpg?ixlib=rb-1.1.0&q=45&auto=format&w=1000&fit=clip',
-        height: 360.h,
-        fit: BoxFit.cover,
-      ),
+      const MusicPlayerArtImage(),
       SizedBox(
         height: 30.h,
       ),
@@ -51,7 +68,7 @@ class SongPlayingScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Phút ban đầu',
+                'Đông kiếm em',
                 style: TextStyle(
                   color: ColorName.white,
                   fontWeight: FontWeight.w600,
@@ -79,13 +96,24 @@ class SongPlayingScreen extends StatelessWidget {
       SizedBox(
         height: 20.h,
       ),
-      SpotifyMusicProgressBar(
-        barColor: ColorName.white,
-        thumbColor: ColorName.white,
-        thumbSize: 13.w,
-        height: 4.h,
-        value: 0,
+      SpotifyMusicPlayer(
+        playerState: state.playerState,
+        currentDuration: state.currentDuration,
+        totalDuration: state.totalDuration ?? state.currentDuration,
+        onPlay: () async {
+          await provider.play(path);
+        },
+        onPause: () async {
+          await provider.pause();
+        },
+        onResume: () async {
+          await provider.resume();
+        },
       ),
+      SizedBox(
+        height: 25.h,
+      ),
+      const MusicPlayerBottomActions(),
     ];
   }
 

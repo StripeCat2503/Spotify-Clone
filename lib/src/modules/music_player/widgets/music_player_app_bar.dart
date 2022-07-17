@@ -4,12 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:spotify_clone/gen/colors.gen.dart';
 
-class SongPlayingAppBar extends SliverAppBar {
+class MusicPlayerAppBar extends SliverAppBar {
   @override
   bool get floating => true;
-
-  @override
-  PreferredSizeWidget? get bottom => const _BottomAppBar();
 
   @override
   Widget? get title => Text(
@@ -42,17 +39,4 @@ class SongPlayingAppBar extends SliverAppBar {
           ),
         ),
       ];
-}
-
-class _BottomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const _BottomAppBar({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-
-  @override
-  // TODO: implement preferredSize
-  Size get preferredSize => Size.fromHeight(30.h);
 }
