@@ -26,9 +26,8 @@ class SignUpScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = ref.watch<SignUpProvider>(signUpProvider);
-    final step = provider.step;
-    final formData = provider.model;
+    final state = ref.watch(signUpProvider);
+    final provider = ref.read(signUpProvider.notifier);
 
     final focusMapRef = useRef<Map<SignUpStep, FocusNode>>({
       SignUpStep.password: FocusNode(),
@@ -36,10 +35,9 @@ class SignUpScreen extends HookConsumerWidget {
       SignUpStep.name: FocusNode(),
     });
 
-    final canNext = provider.canNextStep(step);
+    final canNext = state.canNextStep;
 
     return BaseScreen(
-      provider: provider,
       allowNativePop: false,
       onBack: () => _onBack(context, provider),
       child: Stack(
@@ -52,7 +50,7 @@ class SignUpScreen extends HookConsumerWidget {
               padding: EdgeInsets.only(left: 30.w, right: 30.w, top: 25.h),
               children: [
                 IndexedStack(
-                  index: provider.stepIndex,
+                  index: state.stepIndex,
                   children: [
                     SignUpTextFieldForm(
                       title: 'What’s your email?',
@@ -60,7 +58,7 @@ class SignUpScreen extends HookConsumerWidget {
                       onChanged: provider.onChangeEmail,
                       keyboardType: TextInputType.emailAddress,
                       onSubmit: (value) =>
-                          _onSubmit(provider.step, provider, focusMapRef.value),
+                          _onSubmit(provider, state, focusMapRef.value),
                       autoFocus: true,
                       suffixIcon: canNext ? _checkSuffix : null,
                     ),
@@ -69,33 +67,33 @@ class SignUpScreen extends HookConsumerWidget {
                       helperText: 'Use atleast 8 characters.',
                       onChanged: provider.onChangePassword,
                       onSubmit: (value) =>
-                          _onSubmit(provider.step, provider, focusMapRef.value),
+                          _onSubmit(provider, state, focusMapRef.value),
                       focusNode: focusMapRef.value[SignUpStep.password],
                       suffixIcon: canNext ? _checkSuffix : null,
-                      initialValue: formData.password,
+                      initialValue: state.password,
                     ),
                     SignUpTextFieldForm(
                       title: 'What’s your gender?',
                       onChanged: provider.onChangeGender,
                       onSubmit: (value) =>
-                          _onSubmit(provider.step, provider, focusMapRef.value),
+                          _onSubmit(provider, state, focusMapRef.value),
                       focusNode: focusMapRef.value[SignUpStep.gender],
                       suffixIcon: canNext ? _checkSuffix : null,
-                      initialValue: formData.gender,
+                      initialValue: state.gender,
                     ),
                     SignUpTextFieldForm(
                       title: 'What’s your name?',
                       helperText: 'This appears on your spotify profile',
                       onChanged: provider.onChangeName,
                       onSubmit: (value) =>
-                          _onSubmit(provider.step, provider, focusMapRef.value),
+                          _onSubmit(provider, state, focusMapRef.value),
                       focusNode: focusMapRef.value[SignUpStep.name],
                       suffixIcon: canNext ? _checkSuffix : null,
-                      initialValue: formData.name,
+                      initialValue: state.name,
                     ),
                   ],
                 ),
-                if (!provider.isLastStep)
+                if (!state.isLastStep)
                   Padding(
                     padding: EdgeInsets.only(top: 43.h),
                     child: SpotifyButton(
@@ -104,14 +102,15 @@ class SignUpScreen extends HookConsumerWidget {
                       height: 42.h,
                       color: ColorName.originalWhite,
                       enabled: canNext,
-                      onTap: () => _onSubmit(step, provider, focusMapRef.value),
+                      onTap: () =>
+                          _onSubmit(provider, state, focusMapRef.value),
                     ),
                   ),
-                if (provider.isLastStep) const SignUpTermCondition(),
+                if (state.isLastStep) const SignUpTermCondition(),
               ],
             ),
           ),
-          if (provider.isLastStep)
+          if (state.isLastStep)
             Positioned(
               bottom: 50.h,
               left: 0,
@@ -138,11 +137,11 @@ class SignUpScreen extends HookConsumerWidget {
   }
 
   void _onSubmit(
-    SignUpStep step,
     SignUpProvider provider,
+    SignUpState state,
     Map<SignUpStep, FocusNode> map,
   ) {
-    if (provider.canNextStep(step)) {
+    if (state.canNextStep) {
       final nextStep = provider.nextStep();
       map[nextStep]?.requestFocus();
     }

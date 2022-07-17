@@ -1,19 +1,26 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify_clone/src/core/providers/base_provider.dart';
 import 'package:spotify_clone/src/core/screens/main_screen.dart';
 
-class MainScreenProvider extends BaseProvider {
-  MainScreenTab tab = MainScreenTab.home;
+part 'main_screen_provider.freezed.dart';
+
+class MainScreenProvider extends StateNotifier<MainScreenState> {
+  MainScreenProvider(super.state);
 
   void changeTab(MainScreenTab tab) {
-    this.tab = tab;
-    notifyListeners();
+    state = state.copyWith(tab: tab);
   }
-
-  @override
-  void refresh() {}
 }
 
-final mainScreenProvider = ChangeNotifierProvider((ref) {
-  return MainScreenProvider();
+final mainScreenProvider =
+    StateNotifierProvider<MainScreenProvider, MainScreenState>((ref) {
+  const initialState = MainScreenState();
+  return MainScreenProvider(initialState);
 });
+
+@freezed
+class MainScreenState with _$MainScreenState {
+  const factory MainScreenState({
+    @Default(MainScreenTab.home) MainScreenTab tab,
+  }) = _MainScreenState;
+}

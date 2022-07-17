@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:spotify_clone/gen/assets.gen.dart';
 import 'package:spotify_clone/gen/colors.gen.dart';
 import 'package:spotify_clone/src/core/components/spotify_button.dart';
+import 'package:spotify_clone/src/core/routers/main_routes.dart';
 import 'package:spotify_clone/src/core/routers/sign_up_routes.dart';
 import 'package:spotify_clone/src/core/routers/song_routes.dart';
 
@@ -103,7 +104,7 @@ class WelcomeScreen extends StatelessWidget {
             height: 12.h,
           ),
           SpotifyButton(
-            onTap: () {},
+            onTap: () => navigateMain(context),
             title: 'Log in',
             variant: SpotifyButtonVariant.text,
             color: ColorName.white,
