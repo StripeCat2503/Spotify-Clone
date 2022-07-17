@@ -16,7 +16,7 @@ class SignUpTermCondition extends HookConsumerWidget {
       fontWeight: FontWeight.w600,
     );
 
-    final provider = ref.watch<SignUpProvider>(signUpProvider);
+    final state = ref.watch(signUpProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,8 +64,9 @@ class SignUpTermCondition extends HookConsumerWidget {
             ),
             const Spacer(),
             SpotifyCheckbox(
-              checked: provider.privacySendNewsChecked,
-              onChanged: (_) => provider.onCheckPrivacySendNews(),
+              checked: state.privacySendNewsChecked,
+              onChanged: (_) =>
+                  ref.watch(signUpProvider.notifier).onCheckPrivacySendNews(),
             ),
           ],
         ),
@@ -83,8 +84,9 @@ class SignUpTermCondition extends HookConsumerWidget {
             ),
             const Spacer(),
             SpotifyCheckbox(
-              checked: provider.privacyShareDataChecked,
-              onChanged: (_) => provider.onCheckPrivacyShareData(),
+              checked: state.privacyShareDataChecked,
+              onChanged: (_) =>
+                  ref.watch(signUpProvider.notifier).onCheckPrivacyShareData(),
             ),
           ],
         ),

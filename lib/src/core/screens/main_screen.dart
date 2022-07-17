@@ -4,29 +4,33 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify_clone/gen/assets.gen.dart';
 import 'package:spotify_clone/gen/colors.gen.dart';
-import 'package:spotify_clone/src/core/containers/scroll_view_container.dart';
 import 'package:spotify_clone/src/core/providers/main_screen_provider.dart';
 import 'package:spotify_clone/src/core/screens/base_screen.dart';
+import 'package:spotify_clone/src/modules/home/screens/home_screen.dart';
+import 'package:spotify_clone/src/modules/search/screens/search_screen.dart';
+import 'package:spotify_clone/src/modules/your_library/screens/your_library_screen.dart';
 
 class MainScreen extends HookConsumerWidget {
   const MainScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = ref.watch(mainScreenProvider);
+    final state = ref.watch(mainScreenProvider);
+    final provider = ref.read(mainScreenProvider.notifier);
 
     return BaseScreen(
       child: Scaffold(
         appBar: AppBar(),
-        body: const ScrollViewContainer(
-          children: [],
-        ),
-        bottomNavigationBar: _buildBottomNavBar(provider),
+        body: state.tab.asPage,
+        bottomNavigationBar: _buildBottomNavBar(state, provider),
       ),
     );
   }
 
-  Widget _buildBottomNavBar(MainScreenProvider provider) {
+  Widget _buildBottomNavBar(
+    MainScreenState state,
+    MainScreenProvider provider,
+  ) {
     return Padding(
       padding: EdgeInsets.only(
         left: 32.w,
@@ -42,11 +46,11 @@ class MainScreen extends HookConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                tab.bottomIcon(isActive: tab == provider.tab),
+                tab.bottomIcon(isActive: tab == state.tab),
                 SizedBox(
                   height: 5.h,
                 ),
-                tab.bottomTitle(isActive: tab == provider.tab),
+                tab.bottomTitle(isActive: tab == state.tab),
               ],
             ),
           );
@@ -63,6 +67,17 @@ enum MainScreenTab {
 }
 
 extension _MainScreenTabX on MainScreenTab {
+  Widget get asPage {
+    switch (this) {
+      case MainScreenTab.home:
+        return const HomeScreen();
+      case MainScreenTab.search:
+        return const SearchScreen();
+      case MainScreenTab.library:
+        return const YourLibraryScreen();
+    }
+  }
+
   Widget bottomIcon({bool isActive = false}) {
     String path;
     switch (this) {
