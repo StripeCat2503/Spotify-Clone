@@ -4,7 +4,8 @@ import 'package:go_router/go_router.dart';
 typedef SpotifyPageBuilder = Widget Function(GoRouterState state);
 
 enum SpotifyPageTransitionType {
-  slide,
+  slideHorizontal,
+  slideVertical,
   scale,
   fade,
 }
@@ -25,8 +26,10 @@ Widget _transitionMapper(
   Widget child,
 ) {
   switch (transitionType) {
-    case SpotifyPageTransitionType.slide:
-      return _slideTransition(animation, child);
+    case SpotifyPageTransitionType.slideHorizontal:
+      return _slideHorizontalTransition(animation, child);
+    case SpotifyPageTransitionType.slideVertical:
+      return _slideVerticalTransition(animation, child);
     case SpotifyPageTransitionType.fade:
       return _fadeTransition(animation, child);
     case SpotifyPageTransitionType.scale:
@@ -52,8 +55,19 @@ Widget _fadeTransition(Animation<double> animation, Widget child) {
   );
 }
 
-Widget _slideTransition(Animation<double> animation, Widget child) {
+Widget _slideHorizontalTransition(Animation<double> animation, Widget child) {
   final offset = Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero);
+
+  return SlideTransition(
+    position: animation.drive(offset),
+    child: child,
+  );
+}
+
+Widget _slideVerticalTransition(Animation<double> animation, Widget child) {
+  final curved = CurveTween(curve: Curves.easeInOut);
+  final offset =
+      Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero).chain(curved);
 
   return SlideTransition(
     position: animation.drive(offset),
@@ -66,14 +80,17 @@ class SpotifyRoute extends GoRoute {
     required super.path,
     required this.pageTransitionBuilder,
     this.transitionType = SpotifyPageTransitionType.fade,
+    this.transitionDuration = const Duration(milliseconds: 300),
   }) : super(builder: _defaultBuilder);
 
   final SpotifyPageBuilder pageTransitionBuilder;
   final SpotifyPageTransitionType transitionType;
+  final Duration transitionDuration;
 
   @override
   GoRouterPageBuilder? get pageBuilder =>
       (context, state) => CustomTransitionPage(
+            transitionDuration: transitionDuration,
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) =>
                     _spotifyTransitionBuilder(

@@ -12,6 +12,9 @@ class MusicPlayerProvider extends StateNotifier<MusicPlayerState> {
 
   AudioPlayer get player => state.player;
 
+  bool dragging = false;
+  double currentVolume = 0.0;
+
   void init() {
     player.onDurationChanged.listen(_onDurationChanged);
     player.onPlayerStateChanged.listen(_onPlayerStateChanged);
@@ -21,8 +24,10 @@ class MusicPlayerProvider extends StateNotifier<MusicPlayerState> {
   }
 
   Future<void> play(String path) async {
+    currentVolume = 1.0;
     await player.play(
       AssetSource(path),
+      volume: currentVolume,
     );
 
     state = state.copyWith(path: path);
@@ -30,6 +35,8 @@ class MusicPlayerProvider extends StateNotifier<MusicPlayerState> {
 
   Future<void> pause() async {
     if (player.state == PlayerState.playing) {
+      await _decreaseVolumeLinearly();
+
       await player.pause();
     }
   }
@@ -37,10 +44,21 @@ class MusicPlayerProvider extends StateNotifier<MusicPlayerState> {
   Future<void> resume() async {
     if (player.state == PlayerState.paused) {
       await player.resume();
+
+      await _increaseVolumeLinearly();
     }
   }
 
+  Future<void> seek(Duration duration) async {
+    await player.seek(duration);
+  }
+
   void _onDurationChanged(Duration duration) {
+    final currentDuration = state.totalDuration;
+    if (currentDuration != null && currentDuration.compareTo(duration) == 0) {
+      return;
+    }
+
     log('_onDurationChanged: $duration');
     state = state.copyWith(totalDuration: duration);
   }
@@ -51,20 +69,77 @@ class MusicPlayerProvider extends StateNotifier<MusicPlayerState> {
   }
 
   void _onPositionChanged(Duration duration) {
+    if (dragging) return;
+
     log('_onPositionChanged: $duration');
     state = state.copyWith(currentDuration: duration);
   }
 
   Future<void> _onPlayerComplete(void _) async {
+    log('_onPlayerComplete');
     await player.stop();
   }
 
-  void _onSeekComplete(void event) {}
+  void _onSeekComplete(void _) {
+    log('_onSeekComplete');
+  }
+
+  Future<void> _decreaseVolumeLinearly() async {
+    currentVolume = 1.0;
+    while (currentVolume > 0) {
+      var sub = 0.1;
+      if (currentVolume > 0.5 && currentVolume < 0.85) {
+        sub = 0.3;
+      }
+
+      if (currentVolume >= 0.3 && currentVolume <= 0.5) {
+        sub = 0.07;
+      }
+
+      if (currentVolume >= 0 && currentVolume < 0.3) {
+        sub = 0.04;
+      }
+
+      currentVolume -= sub;
+
+      await player.setVolume(currentVolume);
+      await Future.delayed(
+        Duration(
+          milliseconds: (300 * currentVolume).ceil(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _increaseVolumeLinearly() async {
+    while (currentVolume < 1.0) {
+      var sub = 0.1;
+
+      if (currentVolume >= 0 && currentVolume < 0.3) {
+        sub = 0.02;
+      }
+
+      if (currentVolume >= 0.3 && currentVolume <= 0.5) {
+        sub = 0.05;
+      }
+
+      if (currentVolume > 0.5 && currentVolume < 1) {
+        sub = 0.5;
+      }
+
+      currentVolume += sub;
+
+      await player.setVolume(currentVolume);
+      await Future.delayed(
+          Duration(milliseconds: (300 * currentVolume).ceil()));
+    }
+  }
 
   @override
   void dispose() {
-    super.dispose();
-    state.player.dispose();
+    _decreaseVolumeLinearly().then((_) {
+      state.player.dispose().then((_) => super.dispose());
+    });
   }
 }
 

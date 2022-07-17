@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify_clone/gen/assets.gen.dart';
 import 'package:spotify_clone/gen/colors.gen.dart';
+import 'package:spotify_clone/src/core/services/service_locator.dart';
+import 'package:spotify_clone/src/core/services/system_ui_service.dart';
+import 'package:spotify_clone/src/core/utils/device.dart';
 import 'package:spotify_clone/src/modules/music_player/providers/music_player_provider.dart';
 import 'package:spotify_clone/src/modules/music_player/widgets/music_player_app_bar.dart';
 import 'package:spotify_clone/src/modules/music_player/widgets/music_player_art_image.dart';
@@ -19,12 +23,19 @@ class MusicPlayerScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = ref.watch(musicPlayerProvider.notifier);
+    final provider = ref.read(musicPlayerProvider.notifier);
+
     final state = ref.watch(musicPlayerProvider);
+
+    final controller = useScrollController();
 
     useEffect(
       () {
         provider.init();
+
+        provider.play(path);
+
+        controller.addListener(() => _scrollListener(controller));
         return () => {};
       },
       [],
@@ -35,8 +46,11 @@ class MusicPlayerScreen extends HookConsumerWidget {
         children: [
           _buildBackground(),
           CustomScrollView(
+            controller: controller,
             slivers: [
-              MusicPlayerAppBar(),
+              MusicPlayerAppBar(
+                onLeadingTap: context.pop,
+              ),
               SliverPadding(
                 padding: EdgeInsets.symmetric(horizontal: 25.w),
                 sliver: SliverList(
@@ -100,6 +114,9 @@ class MusicPlayerScreen extends HookConsumerWidget {
         playerState: state.playerState,
         currentDuration: state.currentDuration,
         totalDuration: state.totalDuration ?? state.currentDuration,
+        onPositionChanged: (value) async {
+          await provider.seek(value);
+        },
         onPlay: () async {
           await provider.play(path);
         },
@@ -109,6 +126,8 @@ class MusicPlayerScreen extends HookConsumerWidget {
         onResume: () async {
           await provider.resume();
         },
+        onDragStart: () => provider.dragging = true,
+        onDragEnd: () => provider.dragging = false,
       ),
       SizedBox(
         height: 25.h,
@@ -128,5 +147,15 @@ class MusicPlayerScreen extends HookConsumerWidget {
         ),
       ),
     );
+  }
+
+  void _scrollListener(ScrollController controller) {
+    final systemUIService = gx<SystemUIService>();
+
+    if (controller.offset > statusBarHeight) {
+      systemUIService.hideStatusBar();
+    } else {
+      systemUIService.showStatusBar();
+    }
   }
 }

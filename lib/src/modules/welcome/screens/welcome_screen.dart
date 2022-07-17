@@ -5,8 +5,10 @@ import 'package:spotify_clone/gen/assets.gen.dart';
 import 'package:spotify_clone/gen/colors.gen.dart';
 import 'package:spotify_clone/src/core/components/spotify_button.dart';
 import 'package:spotify_clone/src/core/routers/main_routes.dart';
+import 'package:spotify_clone/src/core/routers/music_player_routes.dart';
 import 'package:spotify_clone/src/core/routers/sign_up_routes.dart';
-import 'package:spotify_clone/src/core/routers/song_routes.dart';
+import 'package:spotify_clone/src/core/services/service_locator.dart';
+import 'package:spotify_clone/src/core/services/system_ui_service.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -74,7 +76,7 @@ class WelcomeScreen extends StatelessWidget {
             height: 12.h,
           ),
           SpotifyButton(
-            onTap: () => navigateMusicPlayer(context),
+            onTap: () => navigateMusicPlayer(context, push: true),
             title: 'Continue with Google',
             variant: SpotifyButtonVariant.outlined,
             color: ColorName.white,
@@ -84,7 +86,7 @@ class WelcomeScreen extends StatelessWidget {
             height: 12.h,
           ),
           SpotifyButton(
-            onTap: () {},
+            onTap: () => {},
             title: 'Continue with Facebook',
             variant: SpotifyButtonVariant.outlined,
             color: ColorName.white,

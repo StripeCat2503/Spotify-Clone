@@ -1,14 +1,16 @@
+import 'package:animated_svg/animated_svg_controller.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify_clone/gen/assets.gen.dart';
 import 'package:spotify_clone/gen/colors.gen.dart';
+import 'package:spotify_clone/src/core/components/spotify_animated_svg_icon.dart';
 import 'package:spotify_clone/src/core/components/spotify_icon_button.dart';
 import 'package:spotify_clone/src/core/components/spotify_music_progress_bar.dart';
 
-class SpotifyMusicPlayer extends HookConsumerWidget {
+class SpotifyMusicPlayer extends StatefulWidget {
   const SpotifyMusicPlayer({
     Key? key,
     required this.playerState,
@@ -17,6 +19,9 @@ class SpotifyMusicPlayer extends HookConsumerWidget {
     this.onPlay,
     this.onPause,
     this.onResume,
+    this.onPositionChanged,
+    this.onDragStart,
+    this.onDragEnd,
   }) : super(key: key);
 
   final Duration currentDuration;
@@ -25,28 +30,46 @@ class SpotifyMusicPlayer extends HookConsumerWidget {
   final VoidCallback? onPlay;
   final VoidCallback? onPause;
   final VoidCallback? onResume;
+  final ValueChanged<Duration>? onPositionChanged;
+  final VoidCallback? onDragStart;
+  final VoidCallback? onDragEnd;
 
-  Widget get _playIcon {
-    if (playerState == PlayerState.stopped ||
-        playerState == PlayerState.paused) {
-      return SvgPicture.asset(
-        Assets.icons.svg.play.path,
-        color: ColorName.black,
-        width: 36.w,
-        fit: BoxFit.scaleDown,
-      );
-    }
+  @override
+  State<SpotifyMusicPlayer> createState() => _SpotifyMusicPlayerState();
+}
 
-    return SvgPicture.asset(
-      Assets.icons.svg.pause.path,
-      color: ColorName.black,
-      width: 36.w,
-      fit: BoxFit.scaleDown,
-    );
+class _SpotifyMusicPlayerState extends State<SpotifyMusicPlayer> {
+  late final AnimatedSvgController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimatedSvgController();
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  void didUpdateWidget(covariant SpotifyMusicPlayer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.playerState != widget.playerState) {
+      if (widget.playerState == PlayerState.stopped) {
+        _controller.reverse();
+      }
+
+      if (widget.playerState == PlayerState.playing) {
+        _controller.forward();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         SpotifyMusicProgressBar(
@@ -54,8 +77,13 @@ class SpotifyMusicPlayer extends HookConsumerWidget {
           thumbColor: ColorName.white,
           thumbSize: 13.w,
           height: 4.h,
-          duration: currentDuration,
-          totalDuration: totalDuration,
+          duration: widget.currentDuration,
+          totalDuration: widget.totalDuration,
+          onPositionChanged: widget.onPositionChanged,
+          onDragStart: () {
+            widget.onDragStart?.call();
+          },
+          onDragEnd: () => widget.onDragEnd?.call(),
         ),
         SizedBox(
           height: 15.h,
@@ -83,19 +111,32 @@ class SpotifyMusicPlayer extends HookConsumerWidget {
                 SizedBox(
                   width: 45.w,
                 ),
-                SpotifyIconButton(
-                  onTap: _onTapPlay,
-                  icon: Container(
-                    width: 67.w,
-                    height: 67.w,
-                    decoration: const BoxDecoration(
-                      color: ColorName.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 500),
-                      child: _playIcon,
-                    ),
+                Container(
+                  width: 67.w,
+                  height: 67.w,
+                  decoration: const BoxDecoration(
+                    color: ColorName.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: SpotifyAnimatedSvgIcon(
+                    controller: _controller,
+                    onTap: _onTapPlay,
+                    duration: const Duration(milliseconds: 400),
+                    size: 36.w,
+                    children: [
+                      SvgPicture.asset(
+                        Assets.icons.svg.play.path,
+                        color: ColorName.black,
+                        width: 36.w,
+                        fit: BoxFit.scaleDown,
+                      ),
+                      SvgPicture.asset(
+                        Assets.icons.svg.pause.path,
+                        color: ColorName.black,
+                        width: 36.w,
+                        fit: BoxFit.scaleDown,
+                      )
+                    ],
                   ),
                 ),
                 SizedBox(
@@ -125,16 +166,16 @@ class SpotifyMusicPlayer extends HookConsumerWidget {
   }
 
   void _onTapPlay() {
-    if (playerState == PlayerState.playing) {
-      onPause?.call();
+    if (widget.playerState == PlayerState.playing) {
+      widget.onPause?.call();
     }
 
-    if (playerState == PlayerState.paused) {
-      onResume?.call();
+    if (widget.playerState == PlayerState.paused) {
+      widget.onResume?.call();
     }
 
-    if (playerState == PlayerState.stopped) {
-      onPlay?.call();
+    if (widget.playerState == PlayerState.stopped) {
+      widget.onPlay?.call();
     }
   }
 }

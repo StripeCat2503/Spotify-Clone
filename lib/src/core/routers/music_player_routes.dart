@@ -7,9 +7,11 @@ import 'package:spotify_clone/src/modules/music_player/screens/music_player_scre
 const _song = '/song';
 const _playing = '$_song/playing';
 
-final songRoutes = <GoRoute>[
+final musicPlayerRoutes = <GoRoute>[
   SpotifyRoute(
     path: _playing,
+    transitionType: SpotifyPageTransitionType.slideVertical,
+    transitionDuration: const Duration(milliseconds: 500),
     pageTransitionBuilder: (state) {
       return const MusicPlayerScreen();
     },

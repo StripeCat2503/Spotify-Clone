@@ -13,6 +13,9 @@ class SpotifyMusicProgressBar extends StatelessWidget {
   final Duration duration;
   final Duration totalDuration;
   final TextStyle? textStyle;
+  final ValueChanged<Duration>? onPositionChanged;
+  final VoidCallback onDragStart;
+  final VoidCallback onDragEnd;
 
   SpotifyMusicProgressBar({
     Key? key,
@@ -22,7 +25,10 @@ class SpotifyMusicProgressBar extends StatelessWidget {
     required this.height,
     required this.duration,
     required this.totalDuration,
+    required this.onDragStart,
+    required this.onDragEnd,
     this.textStyle,
+    this.onPositionChanged,
   })  : assert(duration.inMilliseconds <= totalDuration.inMilliseconds),
         super(key: key);
 
@@ -47,6 +53,9 @@ class SpotifyMusicProgressBar extends StatelessWidget {
           thumbSize: thumbSize,
           height: height,
           value: value,
+          onChanged: _onChanged,
+          onDragStart: onDragStart,
+          onDragEnd: onDragEnd,
         ),
         SizedBox(
           height: 6.h,
@@ -67,6 +76,13 @@ class SpotifyMusicProgressBar extends StatelessWidget {
       ],
     );
   }
+
+  void _onChanged(double value) {
+    final seconds = (value * totalDuration.inSeconds).floor();
+    final changedDuration = Duration(seconds: seconds);
+
+    onPositionChanged?.call(changedDuration);
+  }
 }
 
 class _SpotifyProgressBar extends LeafRenderObjectWidget {
@@ -75,6 +91,9 @@ class _SpotifyProgressBar extends LeafRenderObjectWidget {
   final double thumbSize;
   final double height;
   final double value;
+  final ValueChanged<double> onChanged;
+  final VoidCallback onDragStart;
+  final VoidCallback onDragEnd;
 
   const _SpotifyProgressBar({
     required this.barColor,
@@ -82,6 +101,9 @@ class _SpotifyProgressBar extends LeafRenderObjectWidget {
     required this.thumbSize,
     required this.height,
     required this.value,
+    required this.onChanged,
+    required this.onDragStart,
+    required this.onDragEnd,
   }) : assert(value >= 0.0 && value <= 1.0);
 
   @override
@@ -92,6 +114,9 @@ class _SpotifyProgressBar extends LeafRenderObjectWidget {
       thumbSize: thumbSize,
       height: height,
       value: value,
+      onChanged: onChanged,
+      onDragStart: onDragStart,
+      onDragEnd: onDragEnd,
     );
   }
 
@@ -101,11 +126,14 @@ class _SpotifyProgressBar extends LeafRenderObjectWidget {
     covariant _RenderSpotifyProgressBar renderObject,
   ) {
     renderObject
-      .._barColor = barColor
-      .._thumbColor = thumbColor
-      .._thumbSize = thumbSize
-      .._height = height
-      .._value = value;
+      ..barColor = barColor
+      ..thumbColor = thumbColor
+      ..thumbSize = thumbSize
+      ..height = height
+      ..value = value
+      ..onChanged = onChanged
+      ..onDragStart = onDragStart
+      ..onDragEnd = onDragEnd;
   }
 
   @override
@@ -123,6 +151,9 @@ class _RenderSpotifyProgressBar extends RenderBox {
   double _thumbSize;
   double _height;
   double _value;
+  ValueChanged<double> _onChanged;
+  VoidCallback onDragStart;
+  VoidCallback onDragEnd;
 
   late final HorizontalDragGestureRecognizer _dragGestureRecognizer;
   late final TapGestureRecognizer _tapGestureRecognizer;
@@ -133,14 +164,19 @@ class _RenderSpotifyProgressBar extends RenderBox {
     required double thumbSize,
     required double height,
     required double value,
+    required ValueChanged<double> onChanged,
+    required this.onDragStart,
+    required this.onDragEnd,
   })  : _barColor = barColor,
         _thumbColor = thumbColor,
         _thumbSize = thumbSize,
         _height = height,
-        _value = value {
+        _value = value,
+        _onChanged = onChanged {
     _dragGestureRecognizer = HorizontalDragGestureRecognizer()
       ..onStart = _onStartHorizontalDrag
-      ..onUpdate = _onUpdateHorizontalDrag;
+      ..onUpdate = _onUpdateHorizontalDrag
+      ..onEnd = _onEndHorizontalDrag;
 
     _tapGestureRecognizer = TapGestureRecognizer()..onTapDown = _onTapDown;
   }
@@ -172,6 +208,12 @@ class _RenderSpotifyProgressBar extends RenderBox {
   double get value => _value;
   set value(double value) {
     _value = value;
+    markNeedsLayout();
+  }
+
+  ValueChanged<double> get onChanged => _onChanged;
+  set onChanged(ValueChanged<double> value) {
+    _onChanged = value;
     markNeedsLayout();
   }
 
@@ -256,12 +298,14 @@ class _RenderSpotifyProgressBar extends RenderBox {
   void _updateThumbPosition(Offset position) {
     final dx = position.dx.clamp(0, size.width);
     _value = dx / size.width;
+
     markNeedsPaint();
     markNeedsSemanticsUpdate();
   }
 
   void _onStartHorizontalDrag(DragStartDetails details) {
     _updateThumbPosition(details.localPosition);
+    onDragStart();
   }
 
   void _onUpdateHorizontalDrag(DragUpdateDetails details) {
@@ -270,5 +314,11 @@ class _RenderSpotifyProgressBar extends RenderBox {
 
   void _onTapDown(TapDownDetails details) {
     _updateThumbPosition(details.localPosition);
+    onChanged(_value);
+  }
+
+  void _onEndHorizontalDrag(DragEndDetails details) {
+    onChanged(_value);
+    onDragEnd();
   }
 }
